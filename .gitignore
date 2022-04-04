@@ -2,3 +2,5 @@
 Cargo.lock
 /dicts
 /texts
+/node_modules
+package-lock.json
