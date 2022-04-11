@@ -15,14 +15,15 @@ Deep Learning Base AMI (Ubuntu 18.04) Version 52.0
 ami-0d607ac86033c7b37
 
 
-Texts used
-The Collected Works of H.P. Lovecraft (~4MB)
-The Collected Works of Sir Arthur Conan Doyle (~3MB)
-The Collected Works of Edgar Allan Poe (~1MB)
-The King In Yellow by Robert W. Chambers (~400KB)
+### Texts used
+* The Collected Works of H.P. Lovecraft (~4MB)
+* The Collected Works of Sir Arthur Conan Doyle (~3MB)
+* The Collected Works of Edgar Allan Poe (~1MB)
+* The King In Yellow by Robert W. Chambers (~400KB)
 
 Texts from the fantastic WikiSource website
 https://wikisource.org/wiki/Main_Page
 
-Dictionaries from the fantastic Kevin Atkinson
+### Dictionaries used
+Spell-Check Oriented Word Lists, from the fantastic Kevin Atkinson
 http://wordlist.aspell.net/scowl-readme/
