@@ -21,6 +21,9 @@ fn main() {
 
     let mut medium: HashSet<String> = HashSet::new();
     read_file_into_set("dicts/medium-0.txt", &mut medium);
+    if medium.contains("constant") {
+        println!("constant is in the dictionary");
+    }
 
     let mut default: HashSet<String> = HashSet::new();
     read_file_into_set("dicts/default-1.txt", &mut default);
