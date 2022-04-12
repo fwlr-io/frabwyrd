@@ -16,14 +16,17 @@ ami-0d607ac86033c7b37
 
 
 ### Texts used
-* The Collected Works of H.P. Lovecraft (~4MB)
-* The Collected Works of Sir Arthur Conan Doyle (~3MB)
-* The Collected Works of Edgar Allan Poe (~1MB)
-* The King In Yellow by Robert W. Chambers (~400KB)
+* The Collected Works of H.P. Lovecraft (~4MB, ~712k words)
+* The Collected Works of Sir Arthur Conan Doyle (~3MB, ~578k words)
+* The Collected Works of Edgar Allan Poe (~1MB, ~190k words)
+* The King In Yellow by Robert W. Chambers (~400KB, ~71k words)
 
-Texts from the fantastic WikiSource website
-https://wikisource.org/wiki/Main_Page
+Texts from the fantastic [WikiSource website](https://wikisource.org/wiki/Main_Page)
 
 ### Dictionaries used
-Spell-Check Oriented Word Lists, from the fantastic Kevin Atkinson
-http://wordlist.aspell.net/scowl-readme/
+* Medium size, no mis-spellings (105,056 words)
+* Default size, common mis-spellings (128,628 words)
+* Huge size, common and rare mis-spellings (358,842 words)
+* Insane size, all mis-spellings (677,131 words)
+
+[Spell-Check Oriented Word Lists](http://wordlist.aspell.net/scowl-readme/), from the fantastic Kevin Atkinson
