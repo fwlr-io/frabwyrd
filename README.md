@@ -18,6 +18,7 @@ ami-0d607ac86033c7b37
 next steps
 how to split string into words
 make a clean up script for processing text (squash multiple newlines down to 2, strip "newlines between non-period characters" for lovecraft specifically, strip non-ASCII chars, replace single quotation marks with ' and double quotation marks with ", and maybe pare down to just lowercase letters and apostrophes)
+transpose lines so that we get a mix of all in training data and validation data
 
 
 ### Texts used

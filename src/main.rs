@@ -38,4 +38,7 @@ fn main() {
     println!("default: {}", default.len());
     println!("huge: {}", huge.len());
     println!("insane: {}", insane.len());
+
+    // HashMap char -> u32
+    // split on all chars and count
 }
