@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 use std::env;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Lines, Write};
+use std::io::{stdout, BufRead, BufReader, Lines, Write};
 use std::path::Path;
 
 use rand::Rng;
@@ -20,6 +20,15 @@ fn clean_word(word: &str) -> String {
     return word
         .trim_start_matches(|c| char::is_ascii_punctuation(&c))
         .trim_end_matches(|c| char::is_ascii_punctuation(&c))
+        .to_string();
+}
+
+fn lowercase_strip_word(word: &str) -> String {
+    return word
+        .trim_start_matches(|c| char::is_ascii_punctuation(&c))
+        .trim_end_matches(|c| char::is_ascii_punctuation(&c))
+        .trim_end_matches("'s")
+        .to_lowercase()
         .to_string();
 }
 
@@ -160,138 +169,121 @@ fn main() {
     // _make_all_l();
 
     // dictionaries
-
-    println!("\n\tDictionaries:");
-
     let mut medium: HashSet<String> = HashSet::new();
     for line in read_file("dicts/medium-0.txt") {
-        medium.insert(line.unwrap());
+        let word = line.unwrap();
+        medium.insert(word.to_string());
+        medium.insert(word.to_lowercase());
+        medium.insert(clean_word(&word));
+        medium.insert(lowercase_strip_word(&word));
     }
-    println!("medium: {}", medium.len());
-    let mut medium_l: HashSet<String> = HashSet::new();
-    for word in &medium {
-        medium_l.insert(word.to_lowercase());
-    }
-
     let mut default: HashSet<String> = HashSet::new();
     for line in read_file("dicts/default-1.txt") {
-        default.insert(line.unwrap());
+        let word = line.unwrap();
+        default.insert(word.to_string());
+        default.insert(word.to_lowercase());
+        default.insert(clean_word(&word));
+        default.insert(lowercase_strip_word(&word));
     }
-    println!("default: {}", default.len());
-    let mut default_l: HashSet<String> = HashSet::new();
-    for word in &default {
-        default_l.insert(word.to_lowercase());
-    }
-
     let mut huge: HashSet<String> = HashSet::new();
     for line in read_file("dicts/huge-2.txt") {
-        huge.insert(line.unwrap());
+        let word = line.unwrap();
+        huge.insert(word.to_string());
+        huge.insert(word.to_lowercase());
+        huge.insert(clean_word(&word));
+        huge.insert(lowercase_strip_word(&word));
     }
-    println!("huge: {}", huge.len());
-    let mut huge_l: HashSet<String> = HashSet::new();
-    for word in &huge {
-        huge_l.insert(word.to_lowercase());
-    }
-
     let mut insane: HashSet<String> = HashSet::new();
     for line in read_file("dicts/insane-3.txt") {
-        insane.insert(line.unwrap());
+        let word = line.unwrap();
+        insane.insert(word.to_string());
+        insane.insert(word.to_lowercase());
+        insane.insert(clean_word(&word));
+        insane.insert(lowercase_strip_word(&word));
     }
-    println!("insane: {}", insane.len());
-    let mut insane_l: HashSet<String> = HashSet::new();
-    for word in &insane {
-        insane_l.insert(word.to_lowercase());
-    }
-    // all words
-
-    println!("\n\tCorpus: All");
-
-    let mut corpus_words: HashSet<String> = HashSet::new();
-    for line in read_file("texts/all.txt") {
-        for word in line.unwrap().split_whitespace().map(clean_word) {
-            corpus_words.insert(word);
-        }
-    }
-    println!("corpus words: {}", corpus_words.len());
-
-    let mut output_words: HashSet<String> = HashSet::new();
-    for line in read_file("out/output-all.txt") {
-        for word in line.unwrap().split_whitespace().map(clean_word) {
-            output_words.insert(word);
-        }
-    }
-    println!("output words: {}", output_words.len());
-
-    let mut output_mostly_unique_words: HashSet<String> = HashSet::new();
-    for word in &output_words {
-        if !corpus_words.contains(word)
-            && !medium.contains(word)
-            && !default.contains(word)
-            && !huge.contains(word)
-        {
-            output_mostly_unique_words.insert(word.to_string());
-        }
-    }
-    let mut output_unique_words: HashSet<String> = HashSet::new();
-    for word in &output_mostly_unique_words {
-        if !insane.contains(word) {
-            output_unique_words.insert(word.to_string());
-        }
-    }
-    println!("mostly unique words: {}", output_mostly_unique_words.len());
-    println!("fully unique words: {}", output_unique_words.len());
-    for word in output_unique_words.iter().take(100) {
-        println!("{}", word);
-    }
+    println!(
+        "Dictionaries:\t\tmedium: {}\t\tdefault: {}\t\thuge: {}\t\tinsane: {}",
+        medium.len(),
+        default.len(),
+        huge.len(),
+        insane.len()
+    );
 
     // lowercase words
 
-    println!("\n\tCorpus: lowercase:");
-
     let mut corpus_words_l: HashSet<String> = HashSet::new();
     for line in read_file("texts/all-l.txt") {
-        for word in line.unwrap().split_whitespace().map(clean_word) {
-            corpus_words_l.insert(word);
+        for word in line.unwrap().split_whitespace() {
+            corpus_words_l.insert(word.to_string());
+            corpus_words_l.insert(word.to_lowercase());
+            corpus_words_l.insert(clean_word(word));
+            corpus_words_l.insert(lowercase_strip_word(word));
         }
     }
-    println!("corpus words lowercase: {}", corpus_words_l.len());
-
     let mut output_words_l: HashSet<String> = HashSet::new();
     for line in read_file("out/output-all-l.txt") {
-        for word in line.unwrap().split_whitespace().map(clean_word) {
-            output_words_l.insert(word);
-        }
-    }
-    println!("output words lowercase: {}", output_words_l.len());
-
-    let mut output_mostly_unique_words_l: HashSet<String> = HashSet::new();
-    for word in &output_words_l {
-        if !corpus_words_l.contains(word)
-            && !medium_l.contains(word)
-            && !default_l.contains(word)
-            && !huge_l.contains(word)
-        {
-            output_mostly_unique_words_l.insert(word.to_string());
+        for word in line.unwrap().split_whitespace() {
+            output_words_l.insert(lowercase_strip_word(word));
         }
     }
     let mut output_unique_words_l: HashSet<String> = HashSet::new();
-    for word in &output_mostly_unique_words_l {
-        if !insane_l.contains(word) {
+    for raw_word in &output_words_l {
+        // improvement: seen-words working hash-set, if seen skip immediately
+        let word = lowercase_strip_word(raw_word);
+        if !corpus_words_l.contains(&word)
+            && !medium.contains(&word)
+            && !default.contains(&word)
+            && !huge.contains(&word)
+            && !insane.contains(&word)
+            && !word.contains(|c| char::is_numeric(c))
+            && !word.contains(|c| char::is_ascii_punctuation(&c))
+        {
             output_unique_words_l.insert(word.to_string());
         }
     }
     println!(
-        "mostly unique words: {}",
-        output_mostly_unique_words_l.len()
+        "Lowercase corpus:\tcorpus words: {}\t\toutput words: {}\t\tunique words: {}",
+        corpus_words_l.len(),
+        output_words_l.len(),
+        output_unique_words_l.len()
     );
-    println!("fully unique words: {}", output_unique_words_l.len());
-    for word in output_unique_words_l.iter().take(100) {
-        println!("{}", word);
+
+    println!("\n    SOME RANDOM WORDS:");
+    for (i, word) in output_words_l.iter().take(50).enumerate() {
+        print!("{}\t", word);
+        if (i + 1) % 10 == 0 {
+            println!();
+        }
     }
+
+    println!("\n    SOME SHORT WORDS:");
+    for (i, word) in output_words_l
+        .iter()
+        .filter(|c| c.len() < 6)
+        .take(75)
+        .enumerate()
+    {
+        print!("{}\t", word);
+        if (i + 1) % 15 == 0 {
+            println!();
+        }
+    }
+
+    println!("\n    SOME LONG WORDS:");
+    for (i, word) in output_words_l
+        .iter()
+        .filter(|c| c.len() > 15)
+        .take(25)
+        .enumerate()
+    {
+        print!("{}\t", word);
+        if (i + 1) % 5 == 0 {
+            println!();
+        }
+    }
+    stdout().flush().expect("Cannot flush stdout");
 
     // _count_letters()
 
-    // improvement: seen-words working hash-set, if seen skip immediately
-    // next steps: strip 's off words
-    // build database schema to manually evaluate words, "no, yes, good maybe, bad maybe"?
+    // build database? schema to manually evaluate words, "no, yes, good maybe, bad maybe"?
 }
