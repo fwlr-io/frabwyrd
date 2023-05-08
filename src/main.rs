@@ -243,7 +243,6 @@ fn _make_and_write_uniques(do_write: bool) {
             }
         }
         // improvement: seen-words working hash-set, if seen skip immediately
-
     }
     if !do_write {
         println!(
@@ -321,22 +320,24 @@ fn main() {
     // fill seen_words with all of prev_good_words and prev_bad_words
     // for word in all_unique_words, if not in seen_words, match Confirm...
 
-    let mut good_words: Vec<String> = Vec::new();
-    let mut bad_words: Vec<String> = Vec::new();
+    // let mut good_words: Vec<String> = Vec::new();
+    // let mut bad_words: Vec<String> = Vec::new();
     // for word in output_unique_words_l.iter().take(10) {
-        match Confirm().default(true).with_prompt(word).interact_opt() {
-            Some(answer) => if answer {
-                good_words.push(word.to_string());
-            } else {
-                bad_words.push(word.to_string());
-            },
-            None => {
-                println!("Exiting...")
-                // write good words to one file
-                // write bad words to another file
-                println!("Done.")
-            }
-        }
+    // match Confirm().default(true).with_prompt(word).interact_opt() {
+    //     Some(answer) => {
+    //         if answer {
+    //             good_words.push(word.to_string());
+    //         } else {
+    //             bad_words.push(word.to_string());
+    //         }
+    //     }
+    //     None => {
+    //         println!("Exiting...");
+    //         // write good words to one file
+    //         // write bad words to another file
+    //         println!("Done.");
+    //     }
+    // }
 
     //     if Confirm::new()
     //         .default(true)
