@@ -4,6 +4,7 @@ use std::fs::File;
 use std::io::{stdout, BufRead, BufReader, Lines, Write};
 use std::path::Path;
 
+// use dialoguer::Confirm;
 use rand::Rng;
 
 use std::collections::HashMap;
@@ -162,12 +163,7 @@ fn _count_letters() {
     }
 }
 
-fn main() {
-    env::set_var("RUST_BACKTRACE", "1");
-
-    // _make_all();
-    // _make_all_l();
-
+fn _make_and_write_uniques(do_write: bool) {
     // dictionaries
     let mut medium: HashSet<String> = HashSet::new();
     for line in read_file("dicts/medium-0.txt") {
@@ -201,13 +197,16 @@ fn main() {
         insane.insert(clean_word(&word));
         insane.insert(lowercase_strip_word(&word));
     }
-    println!(
-        "Dictionaries:\t\tmedium: {}\t\tdefault: {}\t\thuge: {}\t\tinsane: {}",
-        medium.len(),
-        default.len(),
-        huge.len(),
-        insane.len()
-    );
+
+    if !do_write {
+        println!(
+            "Dictionaries:\t\tmedium: {}\t\tdefault: {}\t\thuge: {}\t\tinsane: {}",
+            medium.len(),
+            default.len(),
+            huge.len(),
+            insane.len()
+        );
+    }
 
     // lowercase words
 
@@ -226,64 +225,127 @@ fn main() {
             output_words_l.insert(lowercase_strip_word(word));
         }
     }
+    let mut seen_words: HashSet<String> = HashSet::new();
     let mut output_unique_words_l: HashSet<String> = HashSet::new();
     for raw_word in &output_words_l {
+        if !seen_words.contains(raw_word) {
+            seen_words.insert(raw_word.to_string());
+            let word = lowercase_strip_word(raw_word);
+            if !corpus_words_l.contains(&word)
+                && !medium.contains(&word)
+                && !default.contains(&word)
+                && !huge.contains(&word)
+                && !insane.contains(&word)
+                && !word.contains(char::is_numeric)
+                && !word.contains(|c| char::is_ascii_punctuation(&c))
+            {
+                output_unique_words_l.insert(word.to_string());
+            }
+        }
         // improvement: seen-words working hash-set, if seen skip immediately
-        let word = lowercase_strip_word(raw_word);
-        if !corpus_words_l.contains(&word)
-            && !medium.contains(&word)
-            && !default.contains(&word)
-            && !huge.contains(&word)
-            && !insane.contains(&word)
-            && !word.contains(|c| char::is_numeric(c))
-            && !word.contains(|c| char::is_ascii_punctuation(&c))
+
+    }
+    if !do_write {
+        println!(
+            "Lowercase corpus:\tcorpus words: {}\t\toutput words: {}\t\tunique words: {}",
+            corpus_words_l.len(),
+            output_words_l.len(),
+            output_unique_words_l.len()
+        );
+
+        println!("\n    SOME RANDOM WORDS:");
+        for (i, word) in output_unique_words_l.iter().take(50).enumerate() {
+            print!("{}\t", word);
+            if (i + 1) % 10 == 0 {
+                println!();
+            }
+        }
+
+        println!("\n    SOME SHORT WORDS:");
+        for (i, word) in output_unique_words_l
+            .iter()
+            .filter(|c| c.len() < 6)
+            .take(75)
+            .enumerate()
         {
-            output_unique_words_l.insert(word.to_string());
+            print!("{}\t", word);
+            if (i + 1) % 15 == 0 {
+                println!();
+            }
         }
-    }
-    println!(
-        "Lowercase corpus:\tcorpus words: {}\t\toutput words: {}\t\tunique words: {}",
-        corpus_words_l.len(),
-        output_words_l.len(),
-        output_unique_words_l.len()
-    );
 
-    println!("\n    SOME RANDOM WORDS:");
-    for (i, word) in output_words_l.iter().take(50).enumerate() {
-        print!("{}\t", word);
-        if (i + 1) % 10 == 0 {
-            println!();
+        println!("\n    SOME MEDIUM WORDS:");
+        for (i, word) in output_unique_words_l
+            .iter()
+            .filter(|c| c.len() >= 6 && c.len() <= 14)
+            .take(50)
+            .enumerate()
+        {
+            print!("{}\t", word);
+            if (i + 1) % 10 == 0 {
+                println!();
+            }
         }
-    }
 
-    println!("\n    SOME SHORT WORDS:");
-    for (i, word) in output_words_l
-        .iter()
-        .filter(|c| c.len() < 6)
-        .take(75)
-        .enumerate()
-    {
-        print!("{}\t", word);
-        if (i + 1) % 15 == 0 {
-            println!();
+        println!("\n    SOME LONG WORDS:");
+        for (i, word) in output_unique_words_l
+            .iter()
+            .filter(|c| c.len() > 14)
+            .take(25)
+            .enumerate()
+        {
+            print!("{}\t", word);
+            if (i + 1) % 5 == 0 {
+                println!();
+            }
         }
+        stdout().flush().expect("Cannot flush stdout");
     }
+    // if do_write {
 
-    println!("\n    SOME LONG WORDS:");
-    for (i, word) in output_words_l
-        .iter()
-        .filter(|c| c.len() > 15)
-        .take(25)
-        .enumerate()
-    {
-        print!("{}\t", word);
-        if (i + 1) % 5 == 0 {
-            println!();
+    // }
+}
+
+fn main() {
+    env::set_var("RUST_BACKTRACE", "1");
+
+    // _make_all();
+    // _make_all_l();
+    // _count_letters();
+    _make_and_write_uniques(false);
+
+    // let all_unique_words = readfiletovec
+    // let prev_good_words = readfiletovec
+    // let prev_bad_words = readfiletovec
+    // let mut seen_words = makehash
+    // fill seen_words with all of prev_good_words and prev_bad_words
+    // for word in all_unique_words, if not in seen_words, match Confirm...
+
+    let mut good_words: Vec<String> = Vec::new();
+    let mut bad_words: Vec<String> = Vec::new();
+    // for word in output_unique_words_l.iter().take(10) {
+        match Confirm().default(true).with_prompt(word).interact_opt() {
+            Some(answer) => if answer {
+                good_words.push(word.to_string());
+            } else {
+                bad_words.push(word.to_string());
+            },
+            None => {
+                println!("Exiting...")
+                // write good words to one file
+                // write bad words to another file
+                println!("Done.")
+            }
         }
-    }
-    stdout().flush().expect("Cannot flush stdout");
 
-    // _count_letters()
-
-    // build database? schema to manually evaluate words, "no, yes, good maybe, bad maybe"?
+    //     if Confirm::new()
+    //         .default(true)
+    //         .with_prompt(word)
+    //         .interact_opt()
+    //         .expect("Failed to read from stdin")
+    //     {
+    //         good_words.push(word.to_string());
+    //     }
+    // }
+    // println!("{:?}", good_words);
 }

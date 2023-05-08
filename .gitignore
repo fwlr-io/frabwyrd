@@ -5,3 +5,7 @@ Cargo.lock
 /out
 /node_modules
 package-lock.json
+*sublime-project
+*sublime-workspace
+.sqliterc
+frabwyrd.db
