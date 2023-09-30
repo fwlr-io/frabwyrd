@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 use std::env;
 use std::fs::File;
-use std::io::{stdout, BufRead, BufReader, Lines, Write};
+use std::io::{stdout, BufRead, BufReader, BufWriter, Lines, Write};
 use std::path::Path;
 
 // use dialoguer::Confirm;
@@ -242,7 +242,6 @@ fn _make_and_write_uniques(do_write: bool) {
                 output_unique_words_l.insert(word.to_string());
             }
         }
-        // improvement: seen-words working hash-set, if seen skip immediately
     }
     if !do_write {
         println!(
@@ -300,6 +299,14 @@ fn _make_and_write_uniques(do_write: bool) {
         }
         stdout().flush().expect("Cannot flush stdout");
     }
+
+    let f = File::create("words.txt").expect("Unable to create file");
+    let mut stream = BufWriter::new(f);
+    for word in output_unique_words_l {
+        // println!("{}", word);
+        writeln!(&mut stream, "{},0,0", word).unwrap();
+    }
+    println!("done.");
     // if do_write {
 
     // }
