@@ -1,0 +1,1 @@
+sqlite3 -init /dev/null -batch frabwyrd.db 'select word from frab where keep = true;'
