@@ -1,0 +1,1 @@
+swift run --package-path ~/dev/ml/ml-stable-diffusion/ StableDiffusionSample "$1" --output-path ./images/ --compute-units all --resource-path ~/dev/ml/ml-stable-diffusion/sd2/
