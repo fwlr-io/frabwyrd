@@ -77,7 +77,7 @@ if $logging; then
   elif $use_api_model; then
     echo "using api at $api"
   else
-    echo "local/api not specified"
+    echo "local/api not specified, exiting"
     exit 1
   fi
 
@@ -97,7 +97,21 @@ fi
 
 # capture result...
 
-raw_definition=$(~/dev/ml/llama.cpp/main --simple-io -m $model -p "Pretend that '$word' is a real English word. Give a dictionary definition of '$word'." 2>/dev/null)
+if $use_local_model; then
+  # run the model
+  raw_definition=$(~/dev/ml/llama.cpp/main --simple-io -m $model -p "Pretend that '$word' is a real English word. Give a dictionary definition of '$word'." 2>/dev/null)
+
+elif $use_api_model; then
+  raw_definition="nothing yet"
+  echo "api calls not implemented yet"
+  exit 1
+  
+else
+  echo "local/api not specified, exiting"
+  exit 1
+fi
+
+
 definition=$(echo ${raw_definition#*:} | sed "s/'/''/g")
 
 if $logging; then
