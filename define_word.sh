@@ -3,9 +3,9 @@
 logging=true
 
 # llm model locations
-hermes="~/dev/ml/llama.cpp/models/openhermes-2.5-mistral-7b.Q5_K_M.gguf"
-mistral="~/dev/ml/llama.cpp/models/mistral-7b-instruct-v0.1.Q4_K_M.gguf"
-llama="~/dev/ml/llama.cpp/models/llama-2-7b-chat.Q4_K_M.gguf"
+hermes=~/dev/ml/llama.cpp/models/openhermes-2.5-mistral-7b.Q5_K_M.gguf
+mistral=~/dev/ml/llama.cpp/models/mistral-7b-instruct-v0.1.Q4_K_M.gguf
+llama=~/dev/ml/llama.cpp/models/llama-2-7b-chat.Q4_K_M.gguf
 
 # api keys
 
@@ -105,7 +105,7 @@ elif $use_api_model; then
   raw_definition="nothing yet"
   echo "api calls not implemented yet"
   exit 1
-  
+
 else
   echo "local/api not specified, exiting"
   exit 1
@@ -115,6 +115,7 @@ fi
 definition=$(echo ${raw_definition#*:} | sed "s/'/''/g")
 
 if $logging; then
+  echo 
   echo "definition for $word, as provided by $llm:"
   echo "$definition"
 fi
@@ -126,5 +127,5 @@ fi
 # achieved with 
 #   sed "s/'/''/g"
 
-echo "here is where we would insert '$word', '$llm', '$definition'"
+echo "  (  and here is where we would insert '$word', '$llm', '$definition'  )"
 # sqlite3 -init /dev/null -batch frabwyrd.db ""
