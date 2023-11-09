@@ -1,1 +1,1 @@
-sqlite3 -init /dev/null -batch frabwyrd.db 'select word from list where keep = true;'
+sqlite3 -init /dev/null -batch ../frabwyrd.db 'select word from list where keep = true;'

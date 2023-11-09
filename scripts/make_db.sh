@@ -1,5 +1,5 @@
 #!/bin/sh
-sqlite3 frabwyrd.db <<EOF
+sqlite3 ../frabwyrd.db <<EOF
 
 create table if not exists list(
   word  text     not null primary key,

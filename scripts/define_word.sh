@@ -86,7 +86,7 @@ fi
 
 # get next word to define from db, based on llm and what's already defined
 
-word=$(sqlite3 -init /dev/null -batch frabwyrd.db "select word from list where (keep = 1) and word not in (select dict.word from dict where (dict.word = word) and (dict.llm = '$llm')) limit 1;")
+word=$(sqlite3 -init /dev/null -batch ../frabwyrd.db "select word from list where (keep = 1) and word not in (select dict.word from dict where (dict.word = word) and (dict.llm = '$llm')) limit 1;")
 
 if $logging; then
   echo "word to define: $word"
@@ -128,4 +128,4 @@ fi
 #   sed "s/'/''/g"
 
 echo "  (  and here is where we would insert '$word', '$llm', '$definition'  )"
-# sqlite3 -init /dev/null -batch frabwyrd.db ""
+# sqlite3 -init /dev/null -batch ../frabwyrd.db ""
