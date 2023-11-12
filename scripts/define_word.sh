@@ -1,86 +1,48 @@
-#!/bin/sh
+#!/bin/bash
 
 logging=true
 
-# llm model locations
-hermes=~/dev/ml/llama.cpp/models/openhermes-2.5-mistral-7b.Q5_K_M.gguf
-mistral=~/dev/ml/llama.cpp/models/mistral-7b-instruct-v0.1.Q4_K_M.gguf
-llama=~/dev/ml/llama.cpp/models/llama-2-7b-chat.Q4_K_M.gguf
+# local model scripts
+# hermes=~/dev/ml/frabwyrd/scripts/define_word_hermes.sh
+mistral=~/dev/ml/frabwyrd/scripts/define_word_mistral.sh
+llama=~/dev/ml/frabwyrd/scripts/define_word_llama.sh
+# to run: . $hermes foo
 
-# api keys
-
-# 
+# remote model scripts
+gpt3=~/dev/ml/frabwyrd/scripts/define_word_gpt3.sh
+gpt4=~/dev/ml/frabwyrd/scripts/define_word_gpt4.sh
+claude=~/dev/ml/frabwyrd/scripts/define_word_claude.sh
+# grok=
+# to run: . $gpt3 foo
 
 # determine which llm to use
 
-use_local_model=false
-use_api_model=false
-
 case $1 in
   mistral)
-    llm='mistral'
-    model=$mistral
-    use_local_model=true
-    ;;
-
-  hermes)
-    llm='hermes'
-    model=$hermes
-    use_local_model=true
-    ;;
-
+    llm='mistral' ;;
+  # hermes)
+    # llm='hermes'  ;;
   llama)
-    llm='llama'
-    model=$llama
-    use_local_model=true
-    ;;
-
+    llm='llama'   ;;
   gpt3)
-    llm='gpt3'
-    api=""
-    apikey=""
-    use_api_model=true
-    ;;
-
+    llm='gpt3'    ;;
   gpt4)
-    llm='gpt4'
-    api=""
-    apikey=""
-    use_api_model=true
-    ;;
-
+    llm='gpt4'    ;;
   claude)
-    llm='claude'
-    api=""
-    apikey=""
-    use_api_model=true
-    ;;
-
-  grok)
-    llm='grok'
-    api=""
-    apikey=""
-    use_api_model=true
-    ;;
-
+    llm='claude'  ;;
+  # grok)
+    # llm='grok'    ;;
   *)
     echo "unrecognised LLM option given: $1"
     exit 1
     ;;
 esac
 
+model=${!llm}
+
 if $logging; then
   echo "using llm: $llm"
-
-  if $use_local_model; then
-    echo "using local model at $model"
-  elif $use_api_model; then
-    echo "using api at $api"
-  else
-    echo "local/api not specified, exiting"
-    exit 1
-  fi
-
+  echo "using script: $model"
 fi
 
 
@@ -93,31 +55,17 @@ if $logging; then
 fi
 
 
-
-
 # capture result...
 
-if $use_local_model; then
-  # run the model
-  raw_definition=$(~/dev/ml/llama.cpp/main --simple-io -m $model -p "Pretend that '$word' is a real English word. Give a dictionary definition of '$word'." 2>/dev/null)
+raw_definition=$(. $model $word)
 
-elif $use_api_model; then
-  raw_definition="nothing yet"
-  echo "api calls not implemented yet"
-  exit 1
-
-else
-  echo "local/api not specified, exiting"
-  exit 1
-fi
-
-
-definition=$(echo ${raw_definition#*:} | sed "s/'/''/g")
+# definition=$(echo ${raw_definition#*:} | sed "s/'/''/g")
 
 if $logging; then
   echo 
   echo "definition for $word, as provided by $llm:"
-  echo "$definition"
+  # echo "$definition"
+  echo "$raw_definition"
 fi
 
 
@@ -127,5 +75,6 @@ fi
 # achieved with 
 #   sed "s/'/''/g"
 
-echo "  (  and here is where we would insert '$word', '$llm', '$definition'  )"
+# echo "  (  and here is where we would insert '$word', '$llm', '$definition'  )"
+echo "  (  and here is where we would insert '$word', '$llm', '$raw_definition'  )"
 # sqlite3 -init /dev/null -batch frabwyrd.db ""

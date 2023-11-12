@@ -13,7 +13,7 @@ curl --silent \
      --header "x-api-key: $apikey" \
      --data '
 {
-  "prompt": "\n\nHuman: Pretend that '$1' is a real English word. Give a dictionary definition of '$1'.\n\nAssistant:",
+  "prompt": "\n\nHuman: Pretend that '$1' is a real English word. Give a single dictionary definition of '$1'.\n\nAssistant:",
   "model": "claude-2",
   "max_tokens_to_sample": 192,
   "stream": false

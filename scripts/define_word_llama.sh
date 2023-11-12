@@ -1,2 +1,4 @@
-definition=$(~/dev/ml/llama.cpp/main -m ~/dev/ml/llama.cpp/models/llama-2-7b-chat.Q4_K_M.gguf -p "[INST] <<SYS>> Answer the question briefly. Do not cite sources. Only use a colon when you are about to begin defining the word. <</SYS>> Assume that '$1' is a real English word. Provide a dictionary definition of '$1', without etymology. [/INST]" 2>/dev/null)
-echo ${definition#*:}
+#!/bin/sh
+prompt="[INST] <<SYS>> Answer the question briefly. Do not cite sources. Only use a colon when you are about to begin defining the word. <</SYS>> Assume that '$1' is a real English word. Provide a dictionary definition of '$1', without etymology. [/INST]"
+definition=$(~/dev/ml/llama.cpp/main -m ~/dev/ml/llama.cpp/models/llama-2-7b-chat.Q4_K_M.gguf -p "$prompt" 2>/dev/null)
+echo ${definition#"$prompt"}
