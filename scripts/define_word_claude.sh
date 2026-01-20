@@ -15,7 +15,7 @@ curl --silent \
 {
   "prompt": "\n\nHuman: Pretend that '$1' is a real English word. Give a single dictionary definition of '$1'.\n\nAssistant:",
   "model": "claude-2",
-  "max_tokens_to_sample": 192,
+  "max_tokens_to_sample": 256,
   "stream": false
 }
 ' | jq '.completion'
