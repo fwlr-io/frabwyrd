@@ -205,7 +205,6 @@ fn make_and_write_uniques() -> HashSet<String> {
         insane.len()
     );
 
-
     // lowercase words
 
     let mut corpus_words_l: HashSet<String> = HashSet::new();
@@ -301,7 +300,7 @@ fn make_and_write_uniques() -> HashSet<String> {
     }
     println!("done.");
 
-    return output_unique_words_l
+    return output_unique_words_l;
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -315,26 +314,30 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut good_words: Vec<String> = Vec::new();
     let mut bad_words: Vec<String> = Vec::new();
     for word in output_unique_words_l.iter().take(10) {
-    match Confirm::new().default(true).with_prompt(word).interact_opt()? {
-        Some(answer) => {
-            if answer {
-                good_words.push(word.to_string());
-            } else {
-                bad_words.push(word.to_string());
+        match Confirm::new()
+            .default(true)
+            .with_prompt(word)
+            .interact_opt()?
+        {
+            Some(answer) => {
+                if answer {
+                    good_words.push(word.to_string());
+                } else {
+                    bad_words.push(word.to_string());
+                }
             }
-        }
-        None => {
-            println!("Exiting...");
-            let f = File::create("words.txt").expect("Unable to create file");
-            let mut stream = BufWriter::new(f);
-            for word in &output_unique_words_l {
-                writeln!(&mut stream, "{},0,0", word).unwrap();
+            None => {
+                println!("Exiting...");
+                let f = File::create("words.txt").expect("Unable to create file");
+                let mut stream = BufWriter::new(f);
+                for word in &output_unique_words_l {
+                    writeln!(&mut stream, "{},0,0", word).unwrap();
+                }
+                // write good words to one file
+                // write bad words to another file
+                println!("Done.");
             }
-            // write good words to one file
-            // write bad words to another file
-            println!("Done.");
         }
     }
-  }
-  return Ok(())
+    return Ok(());
 }
