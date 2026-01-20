@@ -1,24 +1,19 @@
-Frabwyrds
+# Frabwyrds
 
-RNN
-article http://karpathy.github.io/2015/05/21/rnn-effectiveness/
-original github https://github.com/karpathy/char-rnn
-the optimised version https://github.com/jcjohnson/torch-rnn
-run on nvidia-docker https://github.com/NVIDIA/nvidia-docker
+> _’Twas brillig, and the slithy toves_
+>      _Did gyre and gimble in the wabe:_
+> _All mimsy were the borogoves,_
+>      _And the mome raths outgrabe._
 
+### Generating lots of interesting nonsense words
 
-amazon AWS
-p2.xlarge 12G 4x 61GiB
+This [presentation](demo/presentation.pdf) I gave is a good introduction to the project.
 
-Ubuntu 18.04 GPU instance
-Deep Learning Base AMI (Ubuntu 18.04) Version 52.0
-ami-0d607ac86033c7b37
+Check out the [demo word list](demo/demo_word_list.txt) for more examples.
 
+[The OG Karpathy blogpost](http://karpathy.github.io/2015/05/21/rnn-effectiveness/) ([code](https://github.com/karpathy/char-rnn)) that started me on this project. It takes some code archeology to get decade-old projects running.
 
-next steps
-how to split string into words
-make a clean up script for processing text (squash multiple newlines down to 2, strip "newlines between non-period characters" for lovecraft specifically, strip non-ASCII chars, replace single quotation marks with ' and double quotation marks with ", and maybe pare down to just lowercase letters and apostrophes)
-transpose lines so that we get a mix of all in training data and validation data
+There is a more-recently-updated [optimised version](https://github.com/jcjohnson/torch-rnn). I had success running it with [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) on a p2.xlarge AWS instance using "Deep Learning Base AMI (Ubuntu 18.04) Version 52.0 (ami-0d607ac86033c7b37)" for the image.
 
 
 ### Texts used
@@ -27,7 +22,9 @@ transpose lines so that we get a mix of all in training data and validation data
 * The Collected Works of Edgar Allan Poe (~1MB, ~190k words)
 * The King In Yellow by Robert W. Chambers (~400KB, ~71k words)
 
-Texts from the fantastic [WikiSource website](https://wikisource.org/wiki/Main_Page)
+Texts from the fantastic [WikiSource website](https://wikisource.org/wiki/Main_Page).
+
+Training texts were pre-processed by converting characters to ASCII, or removing them if they had no close equivalent.
 
 ### Dictionaries used
 * Medium size, no mis-spellings (105,056 words)
@@ -35,4 +32,6 @@ Texts from the fantastic [WikiSource website](https://wikisource.org/wiki/Main_P
 * Huge size, common and rare mis-spellings (358,842 words)
 * Insane size, all mis-spellings (677,131 words)
 
-[Spell-Check Oriented Word Lists](http://wordlist.aspell.net/scowl-readme/), from the fantastic Kevin Atkinson
+[Spell-Check Oriented Word Lists](http://wordlist.aspell.net/scowl-readme/), from the fantastic Kevin Atkinson.
+
+The dictonaries were used to filter out all real words, leaving behind just the nonsense almost-words.
