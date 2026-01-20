@@ -1,5 +1,5 @@
+use dialoguer::Confirm;
 use std::collections::VecDeque;
-use std::env;
 use std::fs::File;
 use std::io::{stdout, BufRead, BufReader, BufWriter, Lines, Write};
 use std::path::Path;
@@ -33,7 +33,7 @@ fn lowercase_strip_word(word: &str) -> String {
         .to_string();
 }
 
-fn _make_all() {
+fn make_all() {
     let mut poe: VecDeque<String> = read_file("texts/poe.txt")
         .collect::<Result<_, _>>()
         .unwrap();
@@ -84,7 +84,7 @@ fn _make_all() {
     }
 }
 
-fn _make_all_l() {
+fn make_all_l() {
     let mut poe: VecDeque<String> = read_file("texts/poe-l.txt")
         .collect::<Result<_, _>>()
         .unwrap();
@@ -135,7 +135,7 @@ fn _make_all_l() {
     }
 }
 
-fn _count_letters() {
+fn count_letters() {
     let mut all_letters: HashMap<char, u32> = HashMap::new();
     for line in read_file("texts/all.txt") {
         for c in line.unwrap().chars() {
@@ -163,7 +163,7 @@ fn _count_letters() {
     }
 }
 
-fn _make_and_write_uniques(do_write: bool) {
+fn make_and_write_uniques() -> HashSet<String> {
     // dictionaries
     let mut medium: HashSet<String> = HashSet::new();
     for line in read_file("dicts/medium-0.txt") {
@@ -197,16 +197,14 @@ fn _make_and_write_uniques(do_write: bool) {
         insane.insert(clean_word(&word));
         insane.insert(lowercase_strip_word(&word));
     }
+    println!(
+        "Dictionaries:\t\tmedium: {}\t\tdefault: {}\t\thuge: {}\t\tinsane: {}",
+        medium.len(),
+        default.len(),
+        huge.len(),
+        insane.len()
+    );
 
-    if !do_write {
-        println!(
-            "Dictionaries:\t\tmedium: {}\t\tdefault: {}\t\thuge: {}\t\tinsane: {}",
-            medium.len(),
-            default.len(),
-            huge.len(),
-            insane.len()
-        );
-    }
 
     // lowercase words
 
@@ -243,117 +241,100 @@ fn _make_and_write_uniques(do_write: bool) {
             }
         }
     }
-    if !do_write {
-        println!(
-            "Lowercase corpus:\tcorpus words: {}\t\toutput words: {}\t\tunique words: {}",
-            corpus_words_l.len(),
-            output_words_l.len(),
-            output_unique_words_l.len()
-        );
+    println!(
+        "Lowercase corpus:\tcorpus words: {}\t\toutput words: {}\t\tunique words: {}",
+        corpus_words_l.len(),
+        output_words_l.len(),
+        output_unique_words_l.len()
+    );
 
-        println!("\n    SOME RANDOM WORDS:");
-        for (i, word) in output_unique_words_l.iter().take(50).enumerate() {
-            print!("{}\t", word);
-            if (i + 1) % 10 == 0 {
-                println!();
-            }
+    println!("\n    SOME RANDOM WORDS:");
+    for (i, word) in output_unique_words_l.iter().take(50).enumerate() {
+        print!("{}\t", word);
+        if (i + 1) % 10 == 0 {
+            println!();
         }
-
-        println!("\n    SOME SHORT WORDS:");
-        for (i, word) in output_unique_words_l
-            .iter()
-            .filter(|c| c.len() < 6)
-            .take(75)
-            .enumerate()
-        {
-            print!("{}\t", word);
-            if (i + 1) % 15 == 0 {
-                println!();
-            }
-        }
-
-        println!("\n    SOME MEDIUM WORDS:");
-        for (i, word) in output_unique_words_l
-            .iter()
-            .filter(|c| c.len() >= 6 && c.len() <= 14)
-            .take(50)
-            .enumerate()
-        {
-            print!("{}\t", word);
-            if (i + 1) % 10 == 0 {
-                println!();
-            }
-        }
-
-        println!("\n    SOME LONG WORDS:");
-        for (i, word) in output_unique_words_l
-            .iter()
-            .filter(|c| c.len() > 14)
-            .take(25)
-            .enumerate()
-        {
-            print!("{}\t", word);
-            if (i + 1) % 5 == 0 {
-                println!();
-            }
-        }
-        stdout().flush().expect("Cannot flush stdout");
     }
+    println!("\n    SOME SHORT WORDS:");
+    for (i, word) in output_unique_words_l
+        .iter()
+        .filter(|c| c.len() < 6)
+        .take(75)
+        .enumerate()
+    {
+        print!("{}\t", word);
+        if (i + 1) % 15 == 0 {
+            println!();
+        }
+    }
+    println!("\n    SOME MEDIUM WORDS:");
+    for (i, word) in output_unique_words_l
+        .iter()
+        .filter(|c| c.len() >= 6 && c.len() <= 14)
+        .take(50)
+        .enumerate()
+    {
+        print!("{}\t", word);
+        if (i + 1) % 10 == 0 {
+            println!();
+        }
+    }
+    println!("\n    SOME LONG WORDS:");
+    for (i, word) in output_unique_words_l
+        .iter()
+        .filter(|c| c.len() > 14)
+        .take(25)
+        .enumerate()
+    {
+        print!("{}\t", word);
+        if (i + 1) % 5 == 0 {
+            println!();
+        }
+    }
+
+    stdout().flush().expect("Cannot flush stdout");
 
     let f = File::create("words.txt").expect("Unable to create file");
     let mut stream = BufWriter::new(f);
-    for word in output_unique_words_l {
-        // println!("{}", word);
+    for word in &output_unique_words_l {
         writeln!(&mut stream, "{},0,0", word).unwrap();
     }
     println!("done.");
-    // if do_write {
 
-    // }
+    return output_unique_words_l
 }
 
-fn main() {
-    env::set_var("RUST_BACKTRACE", "1");
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // env::set_var("RUST_BACKTRACE", "1");
 
-    // _make_all();
-    // _make_all_l();
-    // _count_letters();
-    _make_and_write_uniques(false);
+    make_all();
+    make_all_l();
+    count_letters();
+    let output_unique_words_l = make_and_write_uniques();
 
-    // let all_unique_words = readfiletovec
-    // let prev_good_words = readfiletovec
-    // let prev_bad_words = readfiletovec
-    // let mut seen_words = makehash
-    // fill seen_words with all of prev_good_words and prev_bad_words
-    // for word in all_unique_words, if not in seen_words, match Confirm...
-
-    // let mut good_words: Vec<String> = Vec::new();
-    // let mut bad_words: Vec<String> = Vec::new();
-    // for word in output_unique_words_l.iter().take(10) {
-    // match Confirm().default(true).with_prompt(word).interact_opt() {
-    //     Some(answer) => {
-    //         if answer {
-    //             good_words.push(word.to_string());
-    //         } else {
-    //             bad_words.push(word.to_string());
-    //         }
-    //     }
-    //     None => {
-    //         println!("Exiting...");
-    //         // write good words to one file
-    //         // write bad words to another file
-    //         println!("Done.");
-    //     }
-    // }
-
-    //     if Confirm::new()
-    //         .default(true)
-    //         .with_prompt(word)
-    //         .interact_opt()
-    //         .expect("Failed to read from stdin")
-    //     {
-    //         good_words.push(word.to_string());
-    //     }
-    // }
-    // println!("{:?}", good_words);
+    let mut good_words: Vec<String> = Vec::new();
+    let mut bad_words: Vec<String> = Vec::new();
+    for word in output_unique_words_l.iter().take(10) {
+    match Confirm::new().default(true).with_prompt(word).interact_opt()? {
+        Some(answer) => {
+            if answer {
+                good_words.push(word.to_string());
+            } else {
+                bad_words.push(word.to_string());
+            }
+        }
+        None => {
+            println!("Exiting...");
+            let f = File::create("words.txt").expect("Unable to create file");
+            let mut stream = BufWriter::new(f);
+            for word in &output_unique_words_l {
+                writeln!(&mut stream, "{},0,0", word).unwrap();
+            }
+            // write good words to one file
+            // write bad words to another file
+            println!("Done.");
+        }
+    }
+  }
+  return Ok(())
 }
