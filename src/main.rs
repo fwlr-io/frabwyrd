@@ -328,13 +328,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             None => {
                 println!("Exiting...");
-                let f = File::create("words.txt").expect("Unable to create file");
-                let mut stream = BufWriter::new(f);
-                for word in &output_unique_words_l {
-                    writeln!(&mut stream, "{},0,0", word).unwrap();
-                }
-                // write good words to one file
-                // write bad words to another file
+                std::fs::write("good-words.txt", good_words.join("\n")).unwrap();
+                std::fs::write("bad-words.txt", bad_words.join("\n")).unwrap();
                 println!("Done.");
             }
         }
