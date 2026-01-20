@@ -1,8 +1,7 @@
 .DS_Store
 /target
 Cargo.lock
-/dicts
-/texts
+/texts/hpl/*.html
 /out
 /node_modules
 package-lock.json
@@ -11,6 +10,5 @@ package-lock.json
 .sqliterc
 frabwyrd.db
 words.txt
-/demo
 /images
 main*log
